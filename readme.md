@@ -11,7 +11,7 @@
 仓库中有已经爬取好的数据，可以选择直接使用
 
 ```shell
-git clone 
+git clone https://github.com/eikohs/leetcode_hot100.git
 cd leetcode_hot100
 python ./Hot100/getQuestion.py
 ```
@@ -19,7 +19,7 @@ python ./Hot100/getQuestion.py
 如果想要自己爬取官网数据的话，需要安装依赖包，并且可能需要根据不同的操作系统安装相应的软件(google-chrome 以及相关驱动，目前只在 Arch Linux 上测试运行成功)
 
 ```shell
-git clone 
+git clone https://github.com/eikohs/leetcode_hot100.git
 cd leetcode_hot100
 pip install -r requirements.txt
 python ./Hot100/getHot100.py

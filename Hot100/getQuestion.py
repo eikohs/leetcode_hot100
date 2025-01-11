@@ -49,13 +49,26 @@ def getSolvedList(filename):
         return False
 
 def chooseQuestion(questions, solved):
-    randNum = random.randint(0, 99)
-    question = questions[randNum]
-    while question['id'] in solved:
-        randNum = random.randint(0, 99)
-        question = questions[randNum]
-    # print(f"quesiont id: {int(question['id'])}")
-    # print(solved)
+    # 要求用户选择题目难度
+    difficulty_map = {
+        'E': '简单',
+        'M': '中等',
+        'H': '困难'
+    }
+    difficulty_input = input("请输入您想要的题目难度(E/M/H)(分别对应'简单/中等/困难'):").strip().upper()
+    
+    # 检查用户输入是否有效
+    while difficulty_input not in difficulty_map:
+        print("输入无效，请重新输入。")
+        difficulty_input = input("请输入您想要的题目难度(E/M/H)(分别对应'简单/中等/困难'):").strip().upper()
+    
+    difficulty = difficulty_map[difficulty_input]
+    # 过滤出符合条件的题目
+    filtered_questions = [q for q in questions 
+                          if q['difficulty'] == difficulty and
+                           q['id'] not in solved]
+    randNum = random.randint(0, len(filtered_questions) - 1)
+    question = filtered_questions[randNum]
     return question
 
 def printQuestion(question):
@@ -63,6 +76,17 @@ def printQuestion(question):
     print(f"题目ID: {int(question['id'])}\t题目: {str(question['title'])}\t难度: {str(question['difficulty'])}")
     print(f"中文Leetcode: https://leetcode.cn/problems/{str(question['en_name'])}")
     print(f"Leetcode: https://leetcode.com/problems/{str(question['en_name'])}")
+
+def waitSolved(id, filename):
+    # 输入用户提示，等待用户输入是否解决题目
+    print('请输入是否解决题目(Y/N): ')
+    user_input = input().strip().upper()
+    if user_input[0] == 'Y':
+        # 标记已解决
+        solveQuestion(id, filename)
+        print('题目已标记为解决。')
+    else:
+        print('未标记题目')
 
 def solveQuestion(id, filename):
     try:
@@ -112,8 +136,8 @@ def main():
         question = chooseQuestion(questions, solved)
         # 打印题目相关信息
         printQuestion(question)
-        # 题目标记为已解决
-        solveQuestion(question['id'], SOLVED_FILE)
+        # 等待用户输入已解决或未解决
+        waitSolved(question['id'], SOLVED_FILE)
 
 
 # 添加这一行来执行 main 函数

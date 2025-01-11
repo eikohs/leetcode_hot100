@@ -49,15 +49,16 @@ def getSolvedList(filename):
         return False
 
 def chooseQuestion(questions, solved):
-    # 处理过滤不出题目的情况
+    # 选择难度并过滤出相关题目
     while True:
         # 要求用户选择题目难度
         difficulty_map = {
             'E': '简单',
             'M': '中等',
-            'H': '困难'
+            'H': '困难',
+            'A': ''  # 添加一个选项来选择所有难度的题目
         }
-        difficulty_input = input("请输入您想要的题目难度(E/M/H)(分别对应'简单/中等/困难'):").strip()[0].upper()
+        difficulty_input = input("请输入您想要的题目难度(E/M/H/A)(分别对应'简单/中等/困难/所有难度'):").strip()[0].upper()
         
         # 检查用户输入是否有效
         while difficulty_input not in difficulty_map:
@@ -66,9 +67,9 @@ def chooseQuestion(questions, solved):
         
         difficulty = difficulty_map[difficulty_input]
         # 过滤出符合条件的题目
-        filtered_questions = [q for q in questions 
-                            if q['difficulty'] == difficulty and
-                            q['id'] not in solved]
+        filtered_questions = [question for question in questions 
+                            if difficulty in question['difficulty'] and
+                            question['id'] not in solved]
         if len(filtered_questions) == 0:
             print("没有符合条件的题目，请重新选择")
         else:

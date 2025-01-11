@@ -49,24 +49,31 @@ def getSolvedList(filename):
         return False
 
 def chooseQuestion(questions, solved):
-    # 要求用户选择题目难度
-    difficulty_map = {
-        'E': '简单',
-        'M': '中等',
-        'H': '困难'
-    }
-    difficulty_input = input("请输入您想要的题目难度(E/M/H)(分别对应'简单/中等/困难'):").strip().upper()
-    
-    # 检查用户输入是否有效
-    while difficulty_input not in difficulty_map:
-        print("输入无效，请重新输入。")
-        difficulty_input = input("请输入您想要的题目难度(E/M/H)(分别对应'简单/中等/困难'):").strip().upper()
-    
-    difficulty = difficulty_map[difficulty_input]
-    # 过滤出符合条件的题目
-    filtered_questions = [q for q in questions 
-                          if q['difficulty'] == difficulty and
-                           q['id'] not in solved]
+    # 处理过滤不出题目的情况
+    while True:
+        # 要求用户选择题目难度
+        difficulty_map = {
+            'E': '简单',
+            'M': '中等',
+            'H': '困难'
+        }
+        difficulty_input = input("请输入您想要的题目难度(E/M/H)(分别对应'简单/中等/困难'):").strip()[0].upper()
+        
+        # 检查用户输入是否有效
+        while difficulty_input not in difficulty_map:
+            print("输入无效，请重新输入。")
+            difficulty_input = input("请输入您想要的题目难度(E/M/H)(分别对应'简单/中等/困难'):").strip()[0].upper()
+        
+        difficulty = difficulty_map[difficulty_input]
+        # 过滤出符合条件的题目
+        filtered_questions = [q for q in questions 
+                            if q['difficulty'] == difficulty and
+                            q['id'] not in solved]
+        if len(filtered_questions) == 0:
+            print("没有符合条件的题目，请重新选择")
+        else:
+            break
+    # 从过滤后的题目中随机选择一个
     randNum = random.randint(0, len(filtered_questions) - 1)
     question = filtered_questions[randNum]
     return question
@@ -80,13 +87,13 @@ def printQuestion(question):
 def waitSolved(id, filename):
     # 输入用户提示，等待用户输入是否解决题目
     print('请输入是否解决题目(Y/N): ')
-    user_input = input().strip().upper()
-    if user_input[0] == 'Y':
+    user_input = input().strip()[0].upper()
+    if user_input == 'Y':
         # 标记已解决
         solveQuestion(id, filename)
-        print('题目已标记为解决。')
+        print('题目被标记为已解决')
     else:
-        print('未标记题目')
+        print('下次努力~')
 
 def solveQuestion(id, filename):
     try:

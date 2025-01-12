@@ -29,3 +29,35 @@
 #### 解题思路
 
 - 首刷：遍历一遍链表读取长度，之后找到倒数第 N 个结点并删除之
+
+### [141 环形链表](https://leetcode.com/problems/linked-list-cycle) [简单 链表型]
+
+> Given `head`, the head of a linked list, determine if the linked list has a cycle in it.
+>
+> There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the `next` pointer. Internally, `pos` is used to denote the index of the node that tail's `next` pointer is connected to. **Note that `pos` is not passed as a parameter**.
+>
+> Return `true` *if there is a cycle in the linked list*. Otherwise, return `false`.
+
+#### 解题思路
+
+- 首刷：快慢节点法，快节点一次前进 2 节点，慢节点一次前进 1 节点，如果两个节点能够相遇那么说明有环。同时可以注意到，假设链表长度为 `n`，并且在 `k` 处有环，而两节点相遇在 `m` 处，那么有下面的等式 $k + m + \mu*(n - k) = 2*(k + m + \nu*(n-k))$ ，即快节点前进的节点数是慢节点的两倍，化简这个式子有 $k+m=(\mu-2\nu)*(n-k)$，其中 $n-k$ 可由慢节点沿环走一圈求出，$m$ 可由 `head` 走到两节点相遇处求出
+
+### [142 环形链表 II](https://leetcode.com/problems/linked-list-cycle-ii) [中等 链表型]
+
+> Given the `head` of a linked list, return *the node where the cycle begins. If there is no cycle, return* `null`.
+>
+> There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the `next` pointer. Internally, `pos` is used to denote the index of the node that tail's `next` pointer is connected to (**0-indexed**). It is `-1` if there is no cycle. **Note that** `pos` **is not passed as a parameter**.
+>
+> **Do not modify** the linked list.
+
+#### 解题思路
+
+- 首刷：快慢节点法，接上一题，在已知 $n-k$ 处节点的情况下，让 `head` 节点与 $n-k$ 处节点一起行动，那么在一起行动 $k$ 步后，两节点将会相遇在循环开始的节点，从而解决问题
+
+### [234 回文链表](https://leetcode.com/problems/palindrome-linked-list) [简单 链表型]
+
+> Given the `head` of a singly linked list, return `true` *if it is a* *palindrome* *or* `false` *otherwise*.
+
+#### 解题思路
+
+- 首刷：快慢节点法可以找到链表的中位节点，从而将链表一分为二，然后转置后部分链表后与前半部分进行比较即可

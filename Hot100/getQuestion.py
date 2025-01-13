@@ -81,6 +81,7 @@ def chooseQuestion(questions, solved):
 
 def printQuestion(question):
     print('已为您选择题目，相关信息如下:')
+    print(f"[{int(question['id'])} {str(question['title'])}](https://leetcode.com/problems/{str(question['en_name'])}) [{str(question['difficulty'])} ]")
     print(f"题目ID: {int(question['id'])}\t题目: {str(question['title'])}\t难度: {str(question['difficulty'])}")
     print(f"中文Leetcode: https://leetcode.cn/problems/{str(question['en_name'])}")
     print(f"Leetcode: https://leetcode.com/problems/{str(question['en_name'])}")
@@ -105,7 +106,7 @@ def solveQuestion(id, filename):
         os.makedirs(os.path.dirname(abs_path), exist_ok=True)
 
         with open(abs_path, 'a+', encoding='utf-8') as file:
-            file.write(str(id)+'\n')
+            file.write('\n'+str(id))
     except IOError as e:
         print(f"Error writing to file {abs_path}: {str(e)}")
         return False

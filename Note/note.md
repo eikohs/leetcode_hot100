@@ -61,3 +61,36 @@
 #### 解题思路
 
 - 首刷：快慢节点法可以找到链表的中位节点，从而将链表一分为二，然后转置后部分链表后与前半部分进行比较即可
+
+### [94 二叉树的中序遍历](https://leetcode.com/problems/binary-tree-inorder-traversal) [简单 二叉树型]
+
+> Given the `root` of a binary tree, return *the inorder traversal of its nodes' values*.
+
+#### 解题思路
+
+- 首刷：中序遍历的定义为[左子树 -> 根节点 -> 右子树]，按照这个顺序递归遍历即可
+
+### [461 汉明距离](https://leetcode.com/problems/hamming-distance) [简单 位运算型]
+
+> The [Hamming distance](https://en.wikipedia.org/wiki/Hamming_distance) between two integers is the number of positions at which the corresponding bits are different.
+>
+> Given two integers `x` and `y`, return *the **Hamming distance** between them*.
+
+#### 解题思路
+
+- 首刷：汉明距离的定义为[两个二进制数之间对应位置存在不同的数量]。不停 $mod$ 2并除以2地同时比较 $mod$ 2 的结果即可，最终有一方归零后加上另一方继续除以 2 的次数； 或者**异或后统计 1 的数量**
+
+### [98 验证二叉搜索树](https://leetcode.com/problems/validate-binary-search-tree) [中等 二叉树型]
+
+> Given the `root` of a binary tree, *determine if it is a valid binary search tree (BST)*.
+>
+> A **valid BST** is defined as follows:
+>
+> - The left subtree of a node contains only nodes with keys **less than** the node's key.
+> - The right subtree of a node contains only nodes with keys **greater than** the node's key.
+> - Both the left and right subtrees must also be binary search trees.
+
+#### 解题思路
+
+- 首刷：递归地进行判断即可，判断当前节点，将结果与左节点、右节点的结果相与
+- 提交错误后：递归地进行判断，但是考虑在递归的过程中引入边界，**只将当前节点与边界做比较，并在递归的过程中更新边界**

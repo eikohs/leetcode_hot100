@@ -94,3 +94,40 @@
 
 - 首刷：递归地进行判断即可，判断当前节点，将结果与左节点、右节点的结果相与
 - 提交错误后：递归地进行判断，但是考虑在递归的过程中引入边界，**只将当前节点与边界做比较，并在递归的过程中更新边界**
+
+### [448 找到所有数组中消失的数字](https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array) [简单 数组型]
+
+> Given an array `nums` of `n` integers where `nums[i]` is in the range `[1, n]`, return *an array of all the integers in the range* `[1, n]` *that do not appear in* `nums`.
+>
+> **Follow up:** Could you do it without extra space and in `O(n)` runtime? You may assume the returned list does not count as extra space.
+
+#### 解题思路
+
+- 首刷：新建一个长度为 `n` 的数组 `count`，有 `count[k-1]` 为 `k` 在 `nums` 中出现的次数，初始值为0，遍历数组后筛选出为 0 的项的 `index` 记录在数组前方
+- 看题解后：在传入的数组中进行标记操作，若 `nums[i] = k`，则使 `nums[(k - 1) % n] += n`（如果 `k` 一次都没有出现那么 `nums[k-1]` 将会保持值$\le n$），遍历传入数组即可
+
+### [617 合并二叉树](https://leetcode.com/problems/merge-two-binary-trees) [简单 二叉树型]
+
+> You are given two binary trees `root1` and `root2`.
+>
+> Imagine that when you put one of them to cover the other, some nodes of the two trees are overlapped while the others are not. You need to merge the two trees into a new binary tree. The merge rule is that if two nodes overlap, then sum node values up as the new value of the merged node. Otherwise, the NOT null node will be used as the node of the new tree.
+>
+> Return *the merged tree*.
+>
+> **Note:** The merging process must start from the root nodes of both trees.
+
+#### 解题思路
+
+- 首刷：定义一个合并函数，传入两树对应位置的节点。若两个节点皆有效，则合并值到新树节点上，并继续合并左子树、右子树后添加到新树节点对应位置；如果存在 `nil` 值，则直接返回另一方的节点
+
+### *[560 和为 K 的子数组](https://leetcode.com/problems/subarray-sum-equals-k) [中等 动态规划型]
+
+> Given an array of integers `nums` and an integer `k`, return *the total number of subarrays whose sum equals to* `k`.
+>
+> A subarray is a contiguous **non-empty** sequence of elements within an array.
+
+#### 解题思路
+
+- 首刷：定义一个 `n*n` 的矩阵 `dp`，其中 `dp[i, j]` 的含义为 `nums` 从 `i` 到 `j` 的序列和，那么能够递归地有 $dp[i, j] = dp[i, j-1] + nums[j]$，则能在 $O(n^2)$ 时间内解决问题。（或者定义一个大小为 `n` 的数组亦能解决问题，不过代码复杂度有所增加）
+- 看到时间有点久的改良：定义 `sum` 数组，有 `sum[i]` 为 `nums` 从 `1` 到 `i` 的和，取代 `dp`，并注意到 `sum[j] - sum[i]` 为 `nums` 从 `i + 1` 到 `j` 的序列和，那么可以在求出 `sum` 数组的同时尝试找到和为 `k` 的子数组（优化了 500ms，提升了 5% 的排名) 
+- 看了题解后：继续注意到  `sum[i] + k = sum[j]` 表示从 `i + 1` 到 `j` 的序列和为 `k`，那么我们用哈希表统计 `sum[i] + k` 的值，同时去除冗余的 `sum` 数组，每次求出 `sum[i]` 后只需要在哈希表中查找一次即可（优化了遍历的时间），优化后的时间复杂度和空间复杂度都为 $O(n)$，十分巧妙

@@ -25,7 +25,7 @@ func test(node *TreeNode, min, max int) bool {
 }
 
 func isValidBST(root *TreeNode) bool {
-	return test(root, -1<<31-1, 1<<31)
+	return test(root, -1<<31-1, 1<<31) // 问题在于无法接受二叉树中出现 int 的最大值和最小值
 }
 
 // @lc code=end

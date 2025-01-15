@@ -11,7 +11,7 @@
 - 首刷：前后指针法，`front` 指针寻找第一个0，`end` 指针在 `front` 之后寻找第一个数字。直到 `end` 指针遍历到数组末尾
 - 刷完后：大可不必如此复杂，**遍历一遍数组将所有非 0 元素移动到数组前部并计数**，之后将数组的后半部分填充为 0 即可
 
-### [169 多数元素](https://leetcode.com/problems/majority-element) [简单 排序型]
+### *[169 多数元素](https://leetcode.com/problems/majority-element) [简单 排序型]
 
 > Given an array `nums` of size `n`, return *the majority element*.
 >
@@ -130,4 +130,39 @@
 
 - 首刷：定义一个 `n*n` 的矩阵 `dp`，其中 `dp[i, j]` 的含义为 `nums` 从 `i` 到 `j` 的序列和，那么能够递归地有 $dp[i, j] = dp[i, j-1] + nums[j]$，则能在 $O(n^2)$ 时间内解决问题。（或者定义一个大小为 `n` 的数组亦能解决问题，不过代码复杂度有所增加）
 - 看到时间有点久的改良：定义 `sum` 数组，有 `sum[i]` 为 `nums` 从 `1` 到 `i` 的和，取代 `dp`，并注意到 `sum[j] - sum[i]` 为 `nums` 从 `i + 1` 到 `j` 的序列和，那么可以在求出 `sum` 数组的同时尝试找到和为 `k` 的子数组（优化了 500ms，提升了 5% 的排名) 
-- 看了题解后：继续注意到  `sum[i] + k = sum[j]` 表示从 `i + 1` 到 `j` 的序列和为 `k`，那么我们用哈希表统计 `sum[i] + k` 的值，同时去除冗余的 `sum` 数组，每次求出 `sum[i]` 后只需要在哈希表中查找一次即可（优化了遍历的时间），优化后的时间复杂度和空间复杂度都为 $O(n)$，十分巧妙
+- 看了题解后：继续注意到  `sum[i] + k = sum[j]` 表示从 `i + 1` 到 `j` 的序列和为 `k`，那么我们用哈希表统计 `sum[i] + k` 的值出现的次数，同时去除冗余的 `sum` 数组，每次求出 `sum[i]` 后只需要在哈希表中查找一次即可（优化了遍历的时间），优化后的时间复杂度和空间复杂度都为 $O(n)$，十分巧妙
+
+### [20 有效的括号](https://leetcode.com/problems/valid-parentheses) [简单 栈型]
+
+> Given a string `s` containing just the characters `'('`, `')'`, `'{'`, `'}'`, `'['` and `']'`, determine if the input string is valid.
+>
+> An input string is valid if:
+>
+> 1. Open brackets must be closed by the same type of brackets.
+> 2. Open brackets must be closed in the correct order.
+> 3. Every close bracket has a corresponding open bracket of the same type.
+
+#### 解题思路
+
+- 首刷：可以用栈的数据结构解决，发现左括号就加入到栈里面，发现右括号就尝试与栈顶括号匹配，不匹配就返回 `false`。
+
+### [338 比特位计数](https://leetcode.com/problems/counting-bits) [简单 位运算型]
+
+> Given an integer `n`, return *an array* `ans` *of length* `n + 1` *such that for each* `i` (`0 <= i <= n`)*,* `ans[i]` *is the **number of*** `1`***'s** in the binary representation of* `i`.
+
+#### 解题思路
+
+- 首刷：依次处理每个数即可，注意有如下规律：$ans[i] = ans[i-1] + 1, i 为奇数$，$ans[i] = ans[i - 1] + 1 - \{(i-1) 末尾连续的1\}, i为偶数$。
+
+### *[240 搜索二维矩阵 II](https://leetcode.com/problems/search-a-2d-matrix-ii) [中等 数组型]
+
+> Write an efficient algorithm that searches for a value `target` in an `m x n` integer matrix `matrix`. This matrix has the following properties:
+>
+> - Integers in each row are sorted in ascending from left to right.
+> - Integers in each column are sorted in ascending from top to bottom.
+
+#### 解题思路
+
+- 首刷：为了利用矩阵的属性，首先需要一个标记矩阵，记录搜索过的点。对于搜索中的每一个点，直接查看它的右、下、右下三个方向的值：如果有则返回 `true`；如果没有则继续搜索三个值中小于目标值且从未搜索过的位置，没有符合条件的则返回 `false`（始终 de 不完 bug,遂放弃）
+- 看解析后：每一行逐行进行二分查找，$O(m * log(n))$解决问题；或者从右上角开始**z型搜索**，对于$matrix[x, y] > target$，抛弃这一列（往下的所有元素都会大于 `target`），对于$matrix[x,y] < target$，左侧的元素肯定不合规，而右侧的元素已经被抛弃过，开始往下尝试搜索
+

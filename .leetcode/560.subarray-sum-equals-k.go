@@ -30,17 +30,16 @@ func oldSubarraySum(nums []int, k int) int {
 }
 
 func subarraySum(nums []int, k int) int {
-	// 通过哈希表记录 sum[j] - k 的值
-	hash := make(map[int]int)
 	count := 0
 	sum := 0
+	// 通过哈希表记录 sum[j] - k 的值
+	hash := make(map[int]int)
 	hash[k] = 1 // 初始化为 1 是因为 sum[j] - k = 0 的情况，即子数组的和等于 k
 	for _, num := range nums {
 		sum += num
 		// 查找哈希表
-		if hash[sum] > 0 {
-			count += hash[sum]
-		}
+		count += hash[sum]
+		// 记录 sum[i] + k 的值
 		hash[sum+k]++
 	}
 	return count

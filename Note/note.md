@@ -166,3 +166,35 @@
 - 首刷：为了利用矩阵的属性，首先需要一个标记矩阵，记录搜索过的点。对于搜索中的每一个点，直接查看它的右、下、右下三个方向的值：如果有则返回 `true`；如果没有则继续搜索三个值中小于目标值且从未搜索过的位置，没有符合条件的则返回 `false`（始终 de 不完 bug,遂放弃）
 - 看解析后：每一行逐行进行二分查找，$O(m * log(n))$解决问题；或者从右上角开始**z型搜索**，对于$matrix[x, y] > target$，抛弃这一列（往下的所有元素都会大于 `target`），对于$matrix[x,y] < target$，左侧的元素肯定不合规，而右侧的元素已经被抛弃过，开始往下尝试搜索
 
+### [21 合并两个有序链表](https://leetcode.com/problems/merge-two-sorted-lists) [简单 链表型]
+
+> You are given the heads of two sorted linked lists `list1` and `list2`.
+>
+> Merge the two lists into one **sorted** list. The list should be made by splicing together the nodes of the first two lists.
+>
+> Return *the head of the merged linked list*.
+
+#### 解题思路
+
+- 首刷：归并排序最基本的函数，写不出来可以自裁了（注意处理特殊情况，即**两个链表有一个是空的情况**）
+
+### *[136 只出现一次的数字](https://leetcode.com/problems/single-number) [简单 位运算型型]
+
+> Given a **non-empty** array of integers `nums`, every element appears *twice* except for one. Find that single one.
+>
+> You must implement a solution with a linear runtime complexity and use only constant extra space.
+
+#### 解题思路
+
+- 首刷：注意到 `nums` 的和一定为 $2*n + k, k 为那个只出现一次的数$，记为 $sum$ 。（别注意了，你是傻逼）
+- 看题解后：显然需要让成对的数字相互抵消，而异或运算符合符合我们的要求。
+
+### [64 最小路径和](https://leetcode.com/problems/minimum-path-sum) [中等 动态规划型]
+
+> Given a `m x n` `grid` filled with non-negative numbers, find a path from top left to bottom right, which minimizes the sum of all numbers along its path.
+>
+> **Note:** You can only move either down or right at any point in time.
+
+#### 解题思路
+
+- 首刷：定义一个`m x n ` 的矩阵 `dp`，用来有 $dp[i][j]$ 表示从左上到 $grid[i][j]$ 的最小路径和，则有递推公式 $dp[i][j] = min\{dp[i-1][j], dp[i][j-1]\} + grid[i][j]$，一路规划到右下角即可；同时，可以简化 `dp` 矩阵的大小，即用一个长为 `n` 的数组保存所有在用的子任务信息，最终做到 $O(n^2)$ 的时间复杂度，$O(n)$ 的空间复杂度

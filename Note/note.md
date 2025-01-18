@@ -198,3 +198,53 @@
 #### 解题思路
 
 - 首刷：定义一个`m x n ` 的矩阵 `dp`，用来有 $dp[i][j]$ 表示从左上到 $grid[i][j]$ 的最小路径和，则有递推公式 $dp[i][j] = min\{dp[i-1][j], dp[i][j-1]\} + grid[i][j]$，一路规划到右下角即可；同时，可以简化 `dp` 矩阵的大小，即用一个长为 `n` 的数组保存所有在用的子任务信息，最终做到 $O(n^2)$ 的时间复杂度，$O(n)$ 的空间复杂度
+
+### [1 两数之和](https://leetcode.com/problems/two-sum) [简单 数组型]
+
+> Given an array of integers `nums` and an integer `target`, return *indices of the two numbers such that they add up to `target`*.
+>
+> You may assume that each input would have ***exactly* one solution**, and you may not use the *same* element twice.
+>
+> You can return the answer in any order.
+
+#### 解题思路
+
+- 首刷：遍历一遍数组，对于遇到的每一个数 `num`，都将 `target-num` 放入哈希表中，同时会先将其 `num` 值与哈希表中前面的 `target-num` 匹配，匹配成功则返回结果
+
+### [160 相交链表](https://leetcode.com/problems/intersection-of-two-linked-lists) [简单 链表型]
+
+> Given the heads of two singly linked-lists `headA` and `headB`, return *the node at which the two lists intersect*. If the two linked lists have no intersection at all, return `null`.
+>
+> For example, the following two linked lists begin to intersect at node `c1`:
+>
+> ![img](https://minio.noteikoh.top:443/blog-eikoh/typora/2025/01/18/160_statement.png)
+>
+> The test cases are generated such that there are no cycles anywhere in the entire linked structure.
+>
+> **Note** that the linked lists must **retain their original structure** after the function returns.
+>
+> **Custom Judge:**
+>
+> The inputs to the **judge** are given as follows (your program is **not** given these inputs):
+>
+> - `intersectVal` - The value of the node where the intersection occurs. This is `0` if there is no intersected node.
+> - `listA` - The first linked list.
+> - `listB` - The second linked list.
+> - `skipA` - The number of nodes to skip ahead in `listA` (starting from the head) to get to the intersected node.
+> - `skipB` - The number of nodes to skip ahead in `listB` (starting from the head) to get to the intersected node.
+>
+> The judge will then create the linked structure based on these inputs and pass the two heads, `headA` and `headB` to your program. If you correctly return the intersected node, then your solution will be **accepted**.
+
+#### 解题思路：
+
+- 首刷：主要问题在于同步两个链表在相交之前的长度，只需要**让 `NA` 先遍历完 `B` 后再去遍历 `A`， `NB` 先遍历完 `A` 后再去遍历 `B`，这样就可以让相交处前的长度一致**，遍历的同时比较两个结点的地址是否相同即可解决问题。
+
+### [437 路径总和 III](https://leetcode.com/problems/path-sum-iii) [中等 二叉树型]
+
+> Given the `root` of a binary tree and an integer `targetSum`, return *the number of paths where the sum of the values along the path equals* `targetSum`.
+>
+> The path does not need to start or end at the root or a leaf, but it must go downwards (i.e., traveling only from parent nodes to child nodes).
+
+#### 解题思路
+
+- 首刷：前序遍历所有结点，在遍历的同时维护一个哈希表，哈希表里面存**从根节点到当前结点的所有前缀和**；遍历到每个结点时用 `targetSum - node.Val` 去匹配哈希表更新结果，之后将当前结点的前缀和存入哈希表，在遍历完子结点后将前缀和从哈希表中删除。**注意要初始化哈希表（从根节点开始的路径）**

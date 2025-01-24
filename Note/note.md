@@ -248,3 +248,29 @@
 #### 解题思路
 
 - 首刷：前序遍历所有结点，在遍历的同时维护一个哈希表，哈希表里面存**从根节点到当前结点的所有前缀和**；遍历到每个结点时用 `targetSum - node.Val` 去匹配哈希表更新结果，之后将当前结点的前缀和存入哈希表，在遍历完子结点后将前缀和从哈希表中删除。**注意要初始化哈希表（从根节点开始的路径）**
+
+### [226 翻转二叉树](https://leetcode.com/problems/invert-binary-tree) [简单 二叉树型]
+
+> Given the `root` of a binary tree, invert the tree, and return *its root*.
+
+#### 解题思路
+
+- 首刷：进入每个节点，转换左右节点即可，只需要注意边界和特殊值的处理
+
+### [104 二叉树的最大深度](https://leetcode.com/problems/maximum-depth-of-binary-tree) [简单 二叉树型]
+
+> Given the `root` of a binary tree, return *its maximum depth*.
+>
+> A binary tree's **maximum depth** is the number of nodes along the longest path from the root node down to the farthest leaf node.
+
+#### 解题思路
+
+- 首刷：遍历一遍数，更新深度并返回即可
+
+### [56 合并区间](https://leetcode.com/problems/merge-intervals) [中等 数组型]
+
+> Given an array of `intervals` where `intervals[i] = [starti, endi]`, merge all overlapping intervals, and return *an array of the non-overlapping intervals that cover all the intervals in the input*.
+
+#### 解题思路
+
+- 首刷：有区间的起点在另一区间的终点之前（或重合）且终点在这区间的起点之后（或重合）即可合并，合并后的区间终点用较大值、起点用较小值，如果将区间按照起点排序可以进行简单处理（保证了区间起点在后一区间的终点之前，且如果有能够合并的几个区间，那么它们一定会是连续出现的，避免了遍历查找）

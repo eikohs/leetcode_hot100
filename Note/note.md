@@ -274,3 +274,123 @@
 #### 解题思路
 
 - 首刷：有区间的起点在另一区间的终点之前（或重合）且终点在这区间的起点之后（或重合）即可合并，合并后的区间终点用较大值、起点用较小值，如果将区间按照起点排序可以进行简单处理（保证了区间起点在后一区间的终点之前，且如果有能够合并的几个区间，那么它们一定会是连续出现的，避免了遍历查找）
+
+### *[121 买卖股票的最佳时机](https://leetcode.com/problems/best-time-to-buy-and-sell-stock) [简单 数组型]
+
+> You are given an array `prices` where `prices[i]` is the price of a given stock on the `ith` day.
+>
+> You want to maximize your profit by choosing a **single day** to buy one stock and choosing a **different day in the future** to sell that stock.
+>
+> Return *the maximum profit you can achieve from this transaction*. If you cannot achieve any profit, return `0`.
+
+#### 解题思路
+
+- 首刷：遍历一遍数组，定义一个与 `prices` 等长的数组 `max`，其中 `max[i]` 为 `i` 天之后的最高价。最后再遍历一遍数组尝试低买高卖即可
+- 看解析后：记录最低价则会将时间减半，我是傻逼
+
+#### [206 反转链表](https://leetcode.com/problems/reverse-linked-list) [简单 链表型]
+
+> Given the `head` of a singly linked list, reverse the list, and return *the reversed list*.
+
+#### 解题思路
+
+- 首刷：没啥好多的，反转即可
+
+### [101 对称二叉树](https://leetcode.com/problems/symmetric-tree) [简单 二叉树型]
+
+> Given the `root` of a binary tree, *check whether it is a mirror of itself* (i.e., symmetric around its center).
+
+#### 解题思路
+
+- 首刷：同时递归根节点的左右子节点即可
+
+### [543 二叉树的直径](https://leetcode.com/problems/diameter-of-binary-tree) [简单 二叉树型]
+
+> Given the `root` of a binary tree, return *the length of the **diameter** of the tree*.
+>
+> The **diameter** of a binary tree is the **length** of the longest path between any two nodes in a tree. This path may or may not pass through the `root`.
+>
+> The **length** of a path between two nodes is represented by the number of edges between them.
+
+#### 解题思路
+
+- 首刷：直径一定会是某个节点分别从左孩子与右孩子出发到达所有叶结点走过的边的最大值之和，我们在后序遍历的时候可以统计这一值，返回最大的值即可
+
+### [406 根据身高重建队列](https://leetcode.com/problems/queue-reconstruction-by-height) [中等 链表型]
+
+> You are given an array of people, `people`, which are the attributes of some people in a queue (not necessarily in order). Each `people[i] = [hi, ki]` represents the `ith` person of height `hi` with **exactly** `ki` other people in front who have a height greater than or equal to `hi`.
+>
+> Reconstruct and return *the queue that is represented by the input array* `people`. The returned queue should be formatted as an array `queue`, where `queue[j] = [hj, kj]` is the attributes of the `jth` person in the queue (`queue[0]` is the person at the front of the queue).
+
+#### 解题思路
+
+- 首刷：依据身高排序建立一个链表，链表的内容包括每个 `people` 的身高、期望在队列前的人数、实际在队列前的人数，初始化时前两项照抄最后一项设为0,然后不停遍历链表将符合要求的 `people` 放入结果队列中
+
+### [70 爬楼梯](https://leetcode.com/problems/climbing-stairs) [简单 基础]
+
+> You are climbing a staircase. It takes `n` steps to reach the top.
+>
+> Each time you can either climb `1` or `2` steps. In how many distinct ways can you climb to the top?
+
+#### 解题思路
+
+- 首刷：对于 $n=2*k+\nu,\nu = 0|1)$，那么从 `i=0` 开始，用 `i` 次爬两步 + `n-2*i` 次爬一步即为一种方案，又有 $C_{n - i}^{i}=(n-i)*(n-i-1)*...*(n-2*i)/i*(i-1)*...*1$ 种排列组合方式，将 `i` 从 `0` 循环到 `k` 得到的排列方式之和即为结果
+
+### [155 最小栈](https://leetcode.com/problems/min-stack) [中等 基础]
+
+> Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+>
+> Implement the `MinStack` class:
+>
+> - `MinStack()` initializes the stack object.
+> - `void push(int val)` pushes the element `val` onto the stack.
+> - `void pop()` removes the element on the top of the stack.
+> - `int top()` gets the top element of the stack.
+> - `int getMin()` retrieves the minimum element in the stack.
+>
+> You must implement a solution with `O(1)` time complexity for each function.
+
+#### 解题思路
+
+- 首刷: 在基本的栈数据结构的基础上，加入一个数组 `min`, `min[n]` 对应栈的前 `n` 个项中的最小元素。同时还需要一个记录栈长度的 `int` 型变量，用于取出最小的元素
+
+### [221 最大正方形](https://leetcode.com/problems/maximal-square) [中等 动态规划型]
+
+> Given an `m x n` binary `matrix` filled with `0`'s and `1`'s, *find the largest square containing only* `1`'s *and return its area*.
+
+#### 解题思路
+
+- 首刷：对于任意位置，如果它对应在 `matrix` 矩阵中的位置是 1，记它的左方\上方\左上方三个位置分别为 `l` \ `t` \ `lt`，如果以这三个位置为右下角的三个 `n-1` 长的全 1 正方形存在，那么就存在 `n` 长的全 1 正方形，对应在代码中即为:`dp[i, j] = min(dp[i-1, j], dp[i, j-1], dp[i, j-1]) + 1`；否则记为 0 即可
+
+### [55 跳跃游戏](https://leetcode.com/problems/jump-game) [中等 数组型]
+
+> You are given an integer array `nums`. You are initially positioned at the array's **first index**, and each element in the array represents your maximum jump length at that position.
+>
+> Return `true` *if you can reach the last index, or* `false` *otherwise*.
+
+#### 解题思路
+
+- 首刷：倒推法，定义一个标记数组 `flag`，与 `nums` 等长，将其最后一位置为 1，然后不停从后往前遍历，只要其走到的范围内有 1 就可将其置为 1，查看第一位是否能置 1 即可（**能成，但是时间和空间复杂度都不太理想**）
+- **优化**：记 `nums` 的长度为 `n` ，那么对于第 `i` 个元素，他想到到达最后一个元素的条件是 `nums[i] >= n - i`，我们从后往前遍历，将每个元素更新为 `nums[i] - n + i`，一旦遇到非负数我们就将 `n` 替换为 `i` ，继续遍历，查看第一个元素的值是否大于 0 即可
+
+### [337 打家劫舍 III](https://leetcode.com/problems/house-robber-iii) [中等 二叉树型]
+
+> The thief has found himself a new place for his thievery again. There is only one entrance to this area, called `root`.
+>
+> Besides the `root`, each house has one and only one parent house. After a tour, the smart thief realized that all houses in this place form a binary tree. It will automatically contact the police if **two directly-linked houses were broken into on the same night**.
+>
+> Given the `root` of the binary tree, return *the maximum amount of money the thief can rob **without alerting the police***.
+
+#### 解题思路
+
+- 首刷：从叶结点向上推，对于每个结点，抢了就不能抢子节点，所以给出两个值，`rubNode` 与 `rubNext`，分别是抢这个节点与抢子节点的收入，回到这个节点的父节点，记价值为 `Val`，继续向上给出 `val + L.rubNext + R.rubNext` 与 `max(L.rubNode, L.rubNext) + max(R.rubNode, R.rubNext)`，一直回到根节点计算得出最大值。
+
+### [48 旋转图像](https://leetcode.com/problems/rotate-image) [中等 数组型]
+
+> You are given an `n x n` 2D `matrix` representing an image, rotate the image by **90** degrees (clockwise).
+>
+> You have to rotate the image [**in-place**](https://en.wikipedia.org/wiki/In-place_algorithm), which means you have to modify the input 2D matrix directly. **DO NOT** allocate another 2D matrix and do the rotation.
+
+#### 解题思路
+
+- 首刷：没有额外空间，意味着只能通过交换达到目的，对于 `i, j` 处的元素，在正方形中与它水平、垂直轴对称的元素分别为 `n - i - 1, j`, `i, n - j - 1`，与它中心点对称的元素为 `n - i - 1, n - j - 1`。它相对于中心的距离为 `i - n/2, j - n/2`，对它来说以中心顺时针旋转的四个元素分别为`i, j`，  `j, n - i - 1`、`n - i - 1, n - j - 1 `、`n - j - 1, i`，在这四个元素按顺序填入 `n - j - 1, i`， `i, j`，  `j, n - i - 1`、`n - i - 1, n - j - 1 `的值即可。为了避免重复的替换，遍历的范围需要限制为整个正方型左上角的四分之一，即 `0~(n/2)+(n%2)`, `0~(n/2)-1`

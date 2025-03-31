@@ -394,3 +394,39 @@
 #### 解题思路
 
 - 首刷：没有额外空间，意味着只能通过交换达到目的，对于 `i, j` 处的元素，在正方形中与它水平、垂直轴对称的元素分别为 `n - i - 1, j`, `i, n - j - 1`，与它中心点对称的元素为 `n - i - 1, n - j - 1`。它相对于中心的距离为 `i - n/2, j - n/2`，对它来说以中心顺时针旋转的四个元素分别为`i, j`，  `j, n - i - 1`、`n - i - 1, n - j - 1 `、`n - j - 1, i`，在这四个元素按顺序填入 `n - j - 1, i`， `i, j`，  `j, n - i - 1`、`n - i - 1, n - j - 1 `的值即可。为了避免重复的替换，遍历的范围需要限制为整个正方型左上角的四分之一，即 `0~(n/2)+(n%2)`, `0~(n/2)-1`
+
+### *[39 组合总和](https://leetcode.com/problems/combination-sum) [中等 回溯法典型]
+
+> Given an array of **distinct** integers `candidates` and a target integer `target`, return *a list of all **unique combinations** of* `candidates` *where the chosen numbers sum to* `target`*.* You may return the combinations in **any order**.
+>
+> The **same** number may be chosen from `candidates` an **unlimited number of times**. Two combinations are unique if the frequency of at least one of the chosen numbers is different.
+>
+> The test cases are generated such that the number of unique combinations that sum up to `target` is less than `150` combinations for the given input.
+
+#### 解题思路
+
+- 首刷：定义一个哈希表 `hash`，`Key` 为 `int` 型，`Val` 为 `int` 数组，遍历 `candidates` 数组，对于每个 `candidate`，遍历它在 $1 \to target$ 范围内的所有整数倍数：记每个倍数为 `multi`，在 `hash` 表中记录 `hash[multi].append(candidate)`... **太复杂了没有可行性，没做出来**
+- 看了题解后：完全背包说是，有动态规划和回溯两种解法。
+  1. 使用搜索回溯法，用一个 `DFS`  搜下去就可以，只不过需要考虑每个数是可以重复的，因此在 `DFS` 函数的尾部要同时进入 **使用并留在当前元素/不使用并跳过当前元素** 两个分支
+  2. 看作一个完全背包，**<u>待补充</u>**
+
+### *[322 零钱兑换](https://leetcode.com/problems/coin-change) [中等 完全背包问题]
+
+> You are given an integer array `coins` representing coins of different denominations and an integer `amount` representing a total amount of money.
+>
+> Return *the fewest number of coins that you need to make up that amount*. If that amount of money cannot be made up by any combination of the coins, return `-1`.
+>
+> You may assume that you have an infinite number of each kind of coin.
+
+#### 解题思路
+
+- 首刷：考虑回溯法，找到所有的解法并选择硬币枚数最小的解法，没有则返回 `-1` （**超时了**）
+- 优化：**没法剪枝，直接动态规划**，定义 `dp[i]` 为兑换 `i` 元所需的最少硬币数量，如果不能兑换则将值填为 `amount + 1`，这样对于 `i` 可以有递推公式 $dp[i] = min\{dp[i - coin] + 1, amount + 1\}$（`for coin in coins`），如果 `dp[amount] <= amount` 则返回 `dp[amount]` 即可，否则返回 -1
+
+### [148 排序链表](https://leetcode.com/problems/sort-list) [中等 归并排序题]
+
+> Given the `head` of a linked list, return *the list after sorting it in **ascending order***.
+
+#### 解题思路
+
+- 首刷：归并排序即可，不要手生写不出来

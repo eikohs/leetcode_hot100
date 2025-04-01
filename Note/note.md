@@ -410,7 +410,7 @@
   1. 使用搜索回溯法，用一个 `DFS`  搜下去就可以，只不过需要考虑每个数是可以重复的，因此在 `DFS` 函数的尾部要同时进入 **使用并留在当前元素/不使用并跳过当前元素** 两个分支
   2. 看作一个完全背包，**<u>待补充</u>**
 
-### *[322 零钱兑换](https://leetcode.com/problems/coin-change) [中等 完全背包问题]
+### *[322 零钱兑换](https://leetcode.com/problems/coin-change) [中等 完全背包典型]
 
 > You are given an integer array `coins` representing coins of different denominations and an integer `amount` representing a total amount of money.
 >
@@ -423,10 +423,85 @@
 - 首刷：考虑回溯法，找到所有的解法并选择硬币枚数最小的解法，没有则返回 `-1` （**超时了**）
 - 优化：**没法剪枝，直接动态规划**，定义 `dp[i]` 为兑换 `i` 元所需的最少硬币数量，如果不能兑换则将值填为 `amount + 1`，这样对于 `i` 可以有递推公式 $dp[i] = min\{dp[i - coin] + 1, amount + 1\}$（`for coin in coins`），如果 `dp[amount] <= amount` 则返回 `dp[amount]` 即可，否则返回 -1
 
-### [148 排序链表](https://leetcode.com/problems/sort-list) [中等 归并排序题]
+### [148 排序链表](https://leetcode.com/problems/sort-list) [中等 归并排序典型]
 
 > Given the `head` of a linked list, return *the list after sorting it in **ascending order***.
 
 #### 解题思路
 
 - 首刷：归并排序即可，不要手生写不出来
+
+### *[215 数组中的第K个最大元素](https://leetcode.com/problems/kth-largest-element-in-an-array) [中等 数组型]
+
+> Given an integer array `nums` and an integer `k`, return *the* `kth` *largest element in the array*.
+>
+> Note that it is the `kth` largest element in the sorted order, not the `kth` distinct element.
+>
+> Can you solve it without sorting?
+
+#### 解题思路
+
+- 首刷：借用快排的思路，以第一个元素为基准，将比它大的放在左边，比它小的放在右边，根据两边的数量进入选择一段继续寻找（**做出来了，但是排名不高，非常狼狈**）
+
+- 优化：优化快排划分的思路，减少不必要的操作：
+
+  1. 进行一个思维转换，第K个最大元素，在排序后的数组中处在 `nums[k-1]` 的位置，我们去找排序后的第 `k-1` 号位置上的元素即可
+
+  2. 通过下面的函数进行划分，划分完毕后，`[left ~ r]` 与 `[r+1, right]` 上的元素在排序后位置锁定（`r` 右边的所有元素一定小于等于 `bench`），**那么我们就可以根据 `r` 的大小选择进入左右两边的哪一边进行查找**
+
+     ```go
+     l, r := left-1, right+1
+     bench := nums[left]
+     for l < r {
+         for l++; nums[l] > bench; l++ {
+         }
+         for r--; nums[r] < bench; r-- {
+         }
+         if l < r {
+             nums[l], nums[r] = nums[r], nums[l]
+         }
+     }
+     ```
+
+  3. 当最后范围缩小到 `left = right` 时，说明我们已经找到了排序后位置锁定在 `nums[k-1]` 上的元素，这个时候返回 `nums[k-1]/nums[left]/nums[right]` 三者之一即可
+
+### [46 全排列](https://leetcode.com/problems/permutations) [中等 深度搜索典型]
+
+> Given an array `nums` of distinct integers, return all the possible permutations. You can return the answer in **any order**.
+
+#### 解题思路
+
+- 首刷：定义一个 `DFS` 函数与一个标记数组 `flag`，然后常规进行深度优先搜索即可
+
+### [538 把二叉搜索树转换为累加树](https://leetcode.com/problems/convert-bst-to-greater-tree) [中等 二叉树型]
+
+> Given the `root` of a Binary Search Tree (BST), convert it to a Greater Tree such that every key of the original BST is changed to the original key plus the sum of all keys greater than the original key in BST.
+>
+> As a reminder, a *binary search tree* is a tree that satisfies these constraints:
+>
+> - The left subtree of a node contains only nodes with keys **less than** the node's key.
+> - The right subtree of a node contains only nodes with keys **greater than** the node's key.
+> - Both the left and right subtrees must also be binary search trees.
+
+#### 解题思路
+
+- 首刷：对于任意一个节点，首先需要加上它右子树上所有节点的和，其次如果它是父节点的左孩子则还需要加上父节点的累加值。因此遍历节点时，先向右孩子传承累积和的同时获取右孩子分支的节点和，并计算出自己的累加值，在将自己的累加值传给左孩子。
+
+### *[399 除法求值](https://leetcode.com/problems/evaluate-division) [中等 并查集典型]
+
+> `[["a","c"],["b","a"],["a","e"],["a","a"],["x","x"]]`
+>
+> You are given an array of variable pairs `equations` and an array of real numbers `values`, where `equations[i] = [Ai, Bi]` and `values[i]` represent the equation `Ai / Bi = values[i]`. Each `Ai` or `Bi` is a string that represents a single variable.
+>
+> You are also given some `queries`, where `queries[j] = [Cj, Dj]` represents the `jth` query where you must find the answer for `Cj / Dj = ?`.
+>
+> Return *the answers to all queries*. If a single answer cannot be determined, return `-1.0`.
+>
+> **Note:** The input is always valid. You may assume that evaluating the queries will not result in division by zero and that there is no contradiction.
+>
+> **Note:** The variables that do not occur in the list of equations are undefined, so the answer cannot be determined for them.
+
+#### 解题思路
+
+- 首刷：用一个哈希表 `hash` 存储每个字符可以转化的另一个字符，这样对于每个计算请求，将分子和分母统一转换到不能继续转换为止，之后比较分子分母的字符，如果不同说明不能计算，如果相同则计算值（**拼尽全力无法战胜，考虑得太少了**）
+- 看题解后：并查集说是，一个并查集就是一个包含了一些节点之间相互关系的有向加权图，有一套特定的实现

@@ -504,4 +504,142 @@
 #### 解题思路
 
 - 首刷：用一个哈希表 `hash` 存储每个字符可以转化的另一个字符，这样对于每个计算请求，将分子和分母统一转换到不能继续转换为止，之后比较分子分母的字符，如果不同说明不能计算，如果相同则计算值（**拼尽全力无法战胜，考虑得太少了**）
+
 - 看题解后：并查集说是，一个并查集就是一个包含了一些节点之间相互关系的有向加权图，有一套特定的实现
+
+  ```go
+  // 实现一个并查集
+  type unionFind struct {
+  	parent []int
+  	weight []float64
+  }
+  
+  // 初始化并查集
+  func newUnionFind(size int) *unionFind {
+  	uf := &unionFind{
+  		parent: make([]int, size),
+  		weight: make([]float64, size),
+  	}
+  
+  	// 将每个节点初始化
+  	for i := 0; i < size; i++ {
+  		uf.parent[i] = i
+  		uf.weight[i] = 1.0
+  	}
+  
+  	return uf
+  }
+  
+  // 实现并查集的查找 同时进行路径压缩
+  func (uf *unionFind) find(x int) int {
+  	if x != uf.parent[x] {
+  		origin := uf.parent[x]
+  		// 路径压缩
+  		uf.parent[x] = uf.find(origin)
+  		// 权值需要同步进行修改
+  		uf.weight[x] = uf.weight[x] * uf.weight[origin]
+  	}
+  	return uf.parent[x]
+  }
+  
+  // 在并查集中添加一个关系
+  func (uf *unionFind) union(x int, y int, val float64) {
+  	rootX := uf.find(x)
+  	rootY := uf.find(y)
+  
+  	if rootX == rootY {
+  		return
+  	}
+  
+  	// 添加一个关系，但不进行路径压缩（避免特殊处理 x == rootX 的情况）
+  	// x -> rootX | x -> y -> rootY ==> y -> rootY | x -> rootX -> rootY
+  	uf.parent[rootX] = rootY
+  	// 先压缩 rootX，避免值被覆盖
+  	uf.weight[rootX] = val * uf.weight[y] / uf.weight[x]
+  }
+  
+  // 在并查集中查找两个节点的关系
+  func (uf *unionFind) caculate(x int, y int) float64 {
+  	rootX := uf.find(x)
+  	rootY := uf.find(y)
+  
+  	if rootX != rootY {
+  		return -1.0
+  	}
+  
+  	return uf.weight[x] / uf.weight[y]
+  }
+  ```
+
+
+### [17 电话号码的字母组合](https://leetcode.com/problems/letter-combinations-of-a-phone-number) [中等 深度搜索型]
+
+> Given a string containing digits from `2-9` inclusive, return all possible letter combinations that the number could represent. Return the answer in **any order**.
+>
+> A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+
+#### 解题思路
+
+- 首刷：定义 `2~9` 分别对应的字母，读取输入并在 `DFS` 中进行组合即可
+
+### [72 编辑距离](https://leetcode.com/problems/edit-distance) [中等 动态规划型]
+
+> Given two strings `word1` and `word2`, return *the minimum number of operations required to convert `word1` to `word2`*.
+>
+> You have the following three operations permitted on a word:
+>
+> - Insert a character
+> - Delete a character
+> - Replace a character
+
+#### 解题思路
+
+- 首刷：定义一个 `dp` 数组，`dp[i][j]` 代表 `word1[0:i]` 转换到 `word2[0:j]` 需要的最少步数，有初始值 `dp[0][0] = 0`，并有递推公式如下（`i > 0 && j > 0`） $dp[i][j] = (word1[i] == word2[j]\space ?\space min\{dp[i-1][j-1], dp[i-1][j] + 1, dp[i][j-1] + 1\}\space :\space min\{dp[i-1][j-1], dp[i][j-1], dp[i-1][j]\} + 1)$ 
+
+### [200 岛屿数量](https://leetcode.com/problems/number-of-islands) [中等 深度搜索]
+
+> Given an `m x n` 2D binary grid `grid` which represents a map of `'1'`s (land) and `'0'`s (water), return *the number of islands*.
+>
+> An **island** is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+
+#### 解题思路
+
+- 首刷：在 `grid` 中任意选一个点开始深度搜索，走到的每一个位置都将 `1` 置为 `0`，每进行一个深度搜索都说明有一个小岛，返回统计到的值即可
+
+### *[62 不同路径](https://leetcode.com/problems/unique-paths) [中等 动态规划型]
+
+> There is a robot on an `m x n` grid. The robot is initially located at the **top-left corner** (i.e., `grid[0][0]`). The robot tries to move to the **bottom-right corner** (i.e., `grid[m - 1][n - 1]`). The robot can only move either down or right at any point in time.
+>
+> Given the two integers `m` and `n`, return *the number of possible unique paths that the robot can take to reach the bottom-right corner*.
+>
+> The test cases are generated so that the answer will be less than or equal to `2 * 109`.
+
+#### 解题思路
+
+- 首刷：机器人需要向下 `m-1` 次，向右 `n-1` 次， 我们可以看作在向下的这些操作之间插入向右的操作，选择用深度搜索进行统计，递归的层数即是向下的操作之间的插槽位置，每次可以选择 `0 ~ n - 1 - pre` （pre 是上面的层数已经放置的操作）**悲报，超时了**
+- 优化：使用动态规划，令 `dp[i][j]` 为 `i+1 x j+1` 大小的 `grid` 的答案，那么递推公式为 $dp[i][j] = dp[i-1][j] + dp[i][j-1]$，另有初始值 `dp[0][i] = dp[i][0] = 1`，返回 `dp[m-1][n-1]` 即可
+
+### [79 单词搜索](https://leetcode.com/problems/word-search) [中等 深度搜索型]
+
+> Given an `m x n` grid of characters `board` and a string `word`, return `true` *if* `word` *exists in the grid*.
+>
+> The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+#### 解题思路
+
+- 首刷：深度搜索即可，注意需要一个标记数组来避免某个元素被重复使用
+
+### [494 目标和](https://leetcode.com/problems/target-sum) [中等 回溯法]
+
+> You are given an integer array `nums` and an integer `target`.
+>
+> You want to build an **expression** out of nums by adding one of the symbols `'+'` and `'-'` before each integer in nums and then concatenate all the integers.
+>
+> - For example, if `nums = [2, 1]`, you can add a `'+'` before `2` and a `'-'` before `1` and concatenate them to build the expression `"+2-1"`.
+>
+> Return the number of different **expressions** that you can build, which evaluates to `target`.
+
+#### 解题思路
+
+- 首刷：使用回溯法即可，需要注意剪枝的条件，定义一个数组 `sum`，`sum[i]` 是 `nums[i:]` 的和，这样在深度搜索时有 `target > sum[i]` 或 `target < -sum[i]` 时即可结束
+- 可以通过，但是时间不太理想，可以用动态规划来用空间换时间，但是推导式太复杂，暂缓

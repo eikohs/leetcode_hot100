@@ -643,3 +643,80 @@
 
 - 首刷：使用回溯法即可，需要注意剪枝的条件，定义一个数组 `sum`，`sum[i]` 是 `nums[i:]` 的和，这样在深度搜索时有 `target > sum[i]` 或 `target < -sum[i]` 时即可结束
 - 可以通过，但是时间不太理想，可以用动态规划来用空间换时间，但是推导式太复杂，暂缓
+
+### [238 除自身以外数组的乘积](https://leetcode.com/problems/product-of-array-except-self) [中等 数组型]
+
+> Given an integer array `nums`, return *an array* `answer` *such that* `answer[i]` *is equal to the product of all the elements of* `nums` *except* `nums[i]`.
+>
+> The product of any prefix or suffix of `nums` is **guaranteed** to fit in a **32-bit** integer.
+>
+> You must write an algorithm that runs in `O(n)` time and without using the division operation.
+
+#### 解题思路
+
+- 首刷：定义一个数组 `dp`，有 `dp[i]` 是 `nums[i+1:]` 的累计乘，这样继续从 0 开始遍历 `nums`，有 `nums[i] = prev * dp[i]`，返回 `nums` 即可
+
+### [198 打家劫舍](https://leetcode.com/problems/house-robber) [中等 ]
+
+> You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and **it will automatically contact the police if two adjacent houses were broken into on the same night**.
+>
+> Given an integer array `nums` representing the amount of money of each house, return *the maximum amount of money you can rob tonight **without alerting the police***.
+
+#### 解题思路
+
+- 首刷：和同名的二叉树题目相似，对于 `i` 可以选择抢与不抢，如果抢了则上一家不能抢，否则上一家可抢可不抢，选择收益最大的即可
+
+### [394 字符串解码](https://leetcode.com/problems/decode-string) [中等 ]
+
+> Given an encoded string, return its decoded string.
+>
+> The encoding rule is: `k[encoded_string]`, where the `encoded_string` inside the square brackets is being repeated exactly `k` times. Note that `k` is guaranteed to be a positive integer.
+>
+> You may assume that the input string is always valid; there are no extra white spaces, square brackets are well-formed, etc. Furthermore, you may assume that the original data does not contain any digits and that digits are only for those repeat numbers, `k`. For example, there will not be input like `3a` or `2[4]`.
+>
+> The test cases are generated so that the length of the output will never exceed $10^5$.
+
+#### 解题思路
+
+- 首刷：牵扯到括号匹配，考虑用栈的结构匹配这些中括号：由于数字与左中括号总是一起出现，因此每次遇到数字就将这个数字和后面跟随的字符串放入栈中；如果读到右中括号，则考虑弹栈，将栈顶元素的字符串拷贝数字次，然后查看栈的状态，如果空则放入结果字符串后面，否则放在栈顶的字符串后面；如果读到字符串，则查看栈的状态，如果空则放入结果字符串后面，否则放在栈顶的字符串后面。
+
+### [15 三数之和](https://leetcode.com/problems/3sum) [中等 数组型]
+
+> Given an integer array nums, return all the triplets `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, and `j != k`, and `nums[i] + nums[j] + nums[k] == 0`.
+>
+> Notice that the solution set must not contain duplicate triplets.
+
+#### 解题思路
+
+- 首刷：数组三次嵌套好像就成了（不兑，没办法避免重复，只能加个 `hash` 用来避免重复，但还是超时）
+- 看题解后：尝试将 $O(N^3)$ 的时间复杂度优化到 $O(N^2)$，注意到当三个数中任意两个数确定时，剩下的那个数也被确定了。同时，为了避免重复，可以考虑让这三个数按照如下的次序被选择：`comb[0] >= comb[1] >= comb[2]`，同时当一个 `comb[0]` 的所有组合被确定后，新选定的 `comb[0]` 需要满足：$comb[0]_{new} < comb[0]_{old}$。因此我们需要先将 `nums` 数组按照递减的次序排序，然后将第二层、第三层循环一起在第二层进行，假设我们选定第一个数为 `nums[i]`，则我们选择 `i + 1` 与 ` n - 1`两个数，查看三数之和，等于 0 则加入结果数组中，若小于 0 则将 `n - 1` 切换至更大的数（向左移动至大于等于 0），否则将 `i + 1` 切换至更小的数 （向右移动至小于等于 0）
+
+### [114 二叉树展开为链表](https://leetcode.com/problems/flatten-binary-tree-to-linked-list) [中等 二叉树型]
+
+> Given the `root` of a binary tree, flatten the tree into a "linked list":
+>
+> - The "linked list" should use the same `TreeNode` class where the `right` child pointer points to the next node in the list and the `left` child pointer is always `null`.
+> - The "linked list" should be in the same order as a [**pre-order** **traversal**](https://en.wikipedia.org/wiki/Tree_traversal#Pre-order,_NLR) of the binary tree.
+
+#### 解题思路
+
+- 首刷：需要转换为前序遍历，即 $self \rightarrow left\_child \rightarrow right\_child$，则定义一个 `dfs` 函数，返回每个节点展开后的联表的头结点和尾结点，按照如下的规则连接它们即可:
+
+  ```go
+  lHead, lEnd := dfs(node.Left)
+  rHead, rEnd := dfs(node.Right)
+  node.Left = nil
+  
+  if lHead != nil {
+      node.Right = lHead
+  } else {
+      lEnd = node
+  }
+  if rHead != nil {
+      lEnd.Right = rHead
+  } else {
+      rEnd = lEnd
+  }
+  ```
+
+  然后返回 `node, rEnd` 即可

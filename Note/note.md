@@ -268,6 +268,20 @@
 - 看题解后：还是得老老实实查看环的出现，用 `[numCourses][numCourses]int` 作为有向图存储依赖，每次添加 `a -> b` 前，先深度搜索 `b` 的依赖，一旦出现 `a` 就说明将要出现环，返回 `false`。另外为了节省时间，搜索过的节点需要标记避免被重复搜索（时间复杂度实在太高，有很多次没必要的深度搜索，一坨答辩）
 - 看题解的评论后：套一个拓扑排序的模板就好了：先读入全部的依赖制成稀疏有向图，同时记录每门课的入度，选择入度为 0 的所有节点加入队列，进行广度搜索，将队列中指向的所有节点的入度减一，如果有节点的入度减为 0 则将它加入队列，一直到队列为空，如果还有入度不为 0 的结点则说明有环的存在
 
+### *[287 寻找重复数](https://leetcode.com/problems/find-the-duplicate-number) [中等 智商题]
+
+> Given an array of integers `nums` containing `n + 1` integers where each integer is in the range `[1, n]` inclusive.
+>
+> There is only **one repeated number** in `nums`, return *this repeated number*.
+>
+> You must solve the problem **without** modifying the array `nums` and using only constant extra space.
+
+#### 解题思路
+
+- 首刷：由于有 `n + 1` 个数字，只有一个重复的数字，可选项是 `1 ~ n`，<u>因此考虑不出来</u>
+- 看题解后：使用 `Floyd` 判圈算法，可以在不动原数组的情况下使用快慢指针检测到环。解释如下：**我们对 nums 数组建图，每个位置 i 连一条 i→nums[i] 的边**。由于存在的重复的数字 `target`，因此 `target` 这个位置一定有两条以上指向它的边，且因为没有其他重复的数字，所以**一旦从一条边进入到 `target` 一定会从另外一条边返回 `target`，<u>因此整张图一定存在环，且我们要找到的 target 就是这个环的入口</u>**，那么整个问题就等价于 ***[142. 环形链表 II](#[142 环形链表 II](https://leetcode.com/problems/linked-list-cycle-ii) [中等 链表型])***。
+- 一个思维漏洞：**如果存在 `i == nums[i]` 会不会导致陷入自环从而返回错误的答案？** 对于 `i == 0`，因为题目限制了 `1 <= nums[i] <= n`，所以 `nums[0]` 一定不会形成自环；对于其他没有重复的数形成的自环如 `k == nums[k]`，因为 $\not \exist \space i \in [0, n], nums[i] = k \and i \ne k$，所以**不会进入到 `k`** 从而陷入错误的自环；对于有重复的数形成的自环，可以进行特殊处理，发现是自环直接返回它即可（不处理也啥事儿没有，相当于快节点一直在环的入口处等待头节点，只是会慢一些）。
+
 ### [19 删除链表的倒数第 N 个结点](https://leetcode.com/problems/remove-nth-node-from-end-of-list) [中等 链表型]
 
 > Given the `head` of a linked list, remove the `nth` node from the end of the list and return its head.
@@ -286,7 +300,7 @@
 
 #### 解题思路
 
-- 首刷：快慢节点法，快节点一次前进 2 节点，慢节点一次前进 1 节点，如果两个节点能够相遇那么说明有环。同时可以注意到，假设链表长度为 `n`，并且在 `k` 处有环，而两节点相遇在 `m` 处，那么有下面的等式 $k + m + \mu*(n - k) = 2*(k + m + \nu*(n-k))$ ，即快节点前进的节点数是慢节点的两倍，化简这个式子有 $k+m=(\mu-2\nu)*(n-k)$，其中 $n-k$ 可由慢节点沿环走一圈求出，$m$ 可由 `head` 走到两节点相遇处求出
+- 首刷：快慢节点法，快节点一次前进 2 节点，慢节点一次前进 1 节点，如果两个节点能够相遇那么说明有环。同时可以注意到，假设链表长度为 `n`，并且在 `k` 处有环，而两节点相遇处相较于环多走了 `m` 处步，则有环长 `n-k`，那么有下面的等式 $k + m + \mu*(n - k) = 2*(k + m + \nu*(n-k))$ ，即快节点前进的节点数是慢节点的两倍，化简这个式子有 $k+m=(\mu-2\nu)*(n-k)$，其中 $n-k$ 可由慢节点沿环走一圈求出
 
 ### [142 环形链表 II](https://leetcode.com/problems/linked-list-cycle-ii) [中等 链表型]
 
@@ -299,6 +313,7 @@
 #### 解题思路
 
 - 首刷：快慢节点法，接上一题，在已知 $n-k$ 处节点的情况下，让 `head` 节点与 $n-k$ 处节点一起行动，那么在一起行动 $k$ 步后，两节点将会相遇在循环开始的节点，从而解决问题
+- 更进一步：不需要找到 `n-k` 处的结点，因为两节点相遇在环后的 `m` 步处，故此时快节点需要走 `n - k - m` 步到环的入口，头节点需要走 `k` 步到达环的入口，但由上一题可以知道 $m + k = (\mu-2\nu)*(n-k)$，所以 $k = (\mu-2\nu)*(n-k) - m = (\mu-2\nu - 1)*(n-k) + (n - k - m)$，因此让快节点与头节点同步向前走，快节点走 $n - k - m$ 步即到达环的入口，然后在环里绕 $\mu-2\nu - 1$ 圈后又回到了环的入口，此时头结点刚好走 $k$ 步到达环的入口，**因此不管快节点在环里绕了多少圈，让他与头结点同步前进，在 $k$ 步过后它们一定会相遇在环的入口**。
 
 ### [234 回文链表](https://leetcode.com/problems/palindrome-linked-list) [简单 链表型]
 
@@ -782,3 +797,33 @@
 
 - 首刷：二分法先找到一个 `target` 所在的位置，然后继续二分法找到边界即可（可以通过，但极限情况下的时间复杂度为 $O(n)$，不太符合题意）
 - 优化：进行两次二分查找，在每次用二分法找到 `target` 后并不急着返回，而是继续二分查找让坐标分别收敛到左侧和右侧即可。
+
+### [105 从前序与中序遍历序列构造二叉树](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal) [中等 二叉树型]
+
+> Given two integer arrays `preorder` and `inorder` where `preorder` is the preorder traversal of a binary tree and `inorder` is the inorder traversal of the same tree, construct and return *the binary tree*.
+
+#### 解题思路
+
+- 首刷：按顺序遍历前序遍历的每一个元素，注意到如下特征：假设每个节点有唯一值，那么对于前序遍历序列中值为 `k` 的根节点，找到它在中序遍历序列里的位置并记为 `pos`，则在中序遍历序列中 `0 ~ pos-1` 是左子树的所有节点，`pos-1 ~ n` 是右子树的所有节点。于是问题就可以转换为`preorder[1:pos], inorder[0:pos-1]` 与 `preorder[pos + 1: n], inorder[pos + 1, n]` 这两个子问题，故而用递归的方法便可以解决这个问题。同时，为了加速对 `pos` 的查找，可以用哈希表存储每个值的位置，这样可以在时间复杂度 $O(N)$，空间复杂度 $O(N)$ 内解决问题。
+
+### [621 任务调度器](https://leetcode.com/problems/task-scheduler) [中等 ]
+
+> You are given an array of CPU `tasks`, each labeled with a letter from A to Z, and a number `n`. Each CPU interval can be idle or allow the completion of one task. Tasks can be completed in any order, but there's a constraint: there has to be a gap of **at least** `n` intervals between two tasks with the same label.
+>
+> Return the **minimum** number of CPU intervals required to complete all tasks.
+>
+>  
+>
+> **Example 1:**
+>
+> **Input:** tasks = ["A","A","A","B","B","B"], n = 2
+>
+> **Output:** 8
+>
+> **Explanation:** A possible sequence is: A -> B -> idle -> A -> B -> idle -> A -> B.
+>
+> After completing task A, you must wait two intervals before doing A again. The same applies to task B. In the 3rd interval, neither A nor B can be done, so you idle. By the 4th interval, you can do A again as 2 intervals have passed.
+
+#### 解题思路
+
+- 首刷：
